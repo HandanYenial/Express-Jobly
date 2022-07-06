@@ -44,22 +44,67 @@ class Company {
     return company;
   }
 
-  /** Find all companies.
-   *
-   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-   * */
+/** Find all companies.Returns [{ handle, name, description, numEmployees, logoUrl }, ...]* */
+//static async findAll() { 
+//    const companiesRes = await db.query(
+//          `SELECT handle,
+//                  name,
+//                  description,
+//                  num_employees AS "numEmployees",
+//                  logo_url AS "logoUrl"
+//           FROM companies
+//           ORDER BY name`);
+//    return companiesRes.rows;}
 
-  static async findAll() {
-    const companiesRes = await db.query(
+//Adding Filtering
+//The route for listing all companies (GET /companies) works, but it currently shows all companies. 
+//Add a new feature to this, allowing API users to filter the results based on optional filtering criteria, 
+//any or all of which can be passed in the query string:
+
+//name: filter by company name: if the string “net” is passed in, this should find any company who name contains the word “net”, case-insensitive (so “Study Networks” should be included).
+//minEmployees: filter to companies that have at least that number of employees.
+//maxEmployees: filter to companies that have no more than that number of employees.
+//If the minEmployees parameter is greater than the maxEmployees parameter, respond with a 400 error with an appropriate message.
+//Some requirements:
+//Do not solve this by issuing a more complex SELECT statement than is needed (for example, if the user isn’t filtering 
+// minEmployees or maxEmployees, the SELECT statement should not include anything about the num_employees.
+
+//Validate that the request does not contain inappropriate other filtering fields in the route. 
+
+  static async findAll(searchFilters ={}){ //searchFilters is a query string
+    let query = 
           `SELECT handle,
                   name,
                   description,
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
-    return companiesRes.rows;
+            FROM companies`;
+    
+    let whereExpressions =[];
+    let queryValues =[];
+    // we can pass in a search filter object with the following keys:
+    const { minEmployees, maxEmployees, name } = searchFilters; 
+
+    if(minEmployees > maxEmployees){ //if minEmployees is greater than maxEmployees
+      throw new BadRequestError("minEmployees must be less than maxEmployees"); //throw error
+    }
+
+    if(minEmployees !== undefined){ //if minEmployees is defined
+      queryValues.push(minEmployees); //push minEmployees to queryValues
+      whereExpressions.push(`num_employees >= $${queryValues.length}`); //the length of the queryValues array= meanning the number of                                                                   //employees
+    }
+
+    if(maxEmployees !== undefined){
+      queryValues.push(maxEmployees);
+      whereExpressions.push(`num_employees <+ $${queryValues.length}`);
+    }
+
+    
+    }
+         
+    )
   }
+
 
   /** Given a company handle, return data about company.
    *
