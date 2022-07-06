@@ -99,13 +99,20 @@ class Company {
       whereExpressions.push(`num_employees <+ $${queryValues.length}`);
     }
 
-    
+    if(name){
+      query.values.push(`%${name}%`);
+      whereExpressions.push(`name ILIKE $${queryValues.length}`);
+    }
+
+    if(whereExpressions.length > 0){
+      query += ` WHERE ${whereExpressions.join(" AND ")}`;
+    }
+
+    query += "ORDER BY name";
+    const companiesRes = await db.query(query, queryValues);
+    return companiesRes.rows;
     }
          
-    )
-  }
-
-
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
