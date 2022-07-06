@@ -7,6 +7,7 @@ const express = require("express");
 
 const { BadRequestError } = require("../expressError");
 const { ensureLoggedIn } = require("../middleware/auth");
+const { ensureAdmin } = require("../middleware/auth");
 const Company = require("../models/company");
 
 const companyNewSchema = require("../schemas/companyNew.json");
@@ -23,8 +24,14 @@ const router = new express.Router();
  *
  * Authorization required: login
  */
+// Creating, updating, and deleting companies should only be possible for users who logged 
+//in with an account that has the is_admin flag in the database.
 
-router.post("/", ensureLoggedIn, async function (req, res, next) {
+//router.post("/", ensureLoggedIn, async function (req, res, next) {
+  //ensurelogged in is for all logged in users, if we want it to be for only admin we need to add ensureAdmin
+// ensureAdmin is a middleware exported from auth.js
+
+router.post("/", ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, companyNewSchema);
     if (!validator.valid) {
@@ -86,8 +93,12 @@ router.get("/:handle", async function (req, res, next) {
  *
  * Authorization required: login
  */
+// Creating, updating, and deleting companies should only be possible for users who logged 
+//in with an account that has the is_admin flag in the database.
+ //ensurelogged in is for all logged in users, if we want it to be for only admin we need to add ensureAdmin
+// ensureAdmin is a middleware exported from auth.js
 
-router.patch("/:handle", ensureLoggedIn, async function (req, res, next) {
+router.patch("/:handle", ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, companyUpdateSchema);
     if (!validator.valid) {
@@ -106,8 +117,12 @@ router.patch("/:handle", ensureLoggedIn, async function (req, res, next) {
  *
  * Authorization: login
  */
+// Creating, updating, and deleting companies should only be possible for users who logged 
+//in with an account that has the is_admin flag in the database.
+ //ensurelogged in is for all logged in users, if we want it to be for only admin we need to add ensureAdmin
+// ensureAdmin is a middleware exported from auth.js
 
-router.delete("/:handle", ensureLoggedIn, async function (req, res, next) {
+router.delete("/:handle", ensureAdmin, async function (req, res, next) {
   try {
     await Company.remove(req.params.handle);
     return res.json({ deleted: req.params.handle });

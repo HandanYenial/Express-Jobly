@@ -64,21 +64,21 @@ describe("findAll", function () {
     expect(companies).toEqual([
       {
         handle: "c1",
-        name: "Client1",
+        name: "C1",
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
       },
       {
         handle: "c2",
-        name: "Client2",
+        name: "C2",
         description: "Desc2",
         numEmployees: 2,
         logoUrl: "http://c2.img",
       },
       {
         handle: "c3",
-        name: "Client3",
+        name: "C3",
         description: "Desc3",
         numEmployees: 3,
         logoUrl: "http://c3.img",
