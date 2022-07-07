@@ -100,7 +100,7 @@ class Company {
     }
 
     if(name){
-      query.values.push(`%${name}%`);
+      queryValues.push(`%${name}%`);
       whereExpressions.push(`name ILIKE $${queryValues.length}`);
     }
 

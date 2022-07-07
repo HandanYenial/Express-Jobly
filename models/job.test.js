@@ -33,11 +33,11 @@ describe("create" , function(){
         expect(job).toEqual(newJob);
 
         const result = await db.query(
-            `SELECT * FROM jobs WHERE id = "1"`
+            `SELECT title,salary, equity, company_handle FROM jobs WHERE id = "1"`
         );
         expect(result.rows).toEqual([
             {
-                id: "1",
+                id: expect.any(Number),
                 title: "Software Engineer",
                 salary: "100000",
                 equity: "0.1",
@@ -135,7 +135,8 @@ describe("Get all jobs" , function(){
 });
 
 describe("get a job" , function(){
-    test("should get a job", async function(){
+
+    test("should get a job" , async function(){
         let job = await Job.get(testJobIds[0]);
         expect (job).toEqual({
             id:testJobIds[0],
@@ -157,7 +158,7 @@ describe("get a job" , function(){
             await Job.get(0);
             fail();
         } catch(err){
-            expect(err).toBeInstanceOf(NotFoundError).toBeTruthy();
+            expect(err instanceof NotFoundError).toBeTruthy();
         }
         });
 });
@@ -195,7 +196,7 @@ describe("update a job" , function(){
             });
             fail();
         } catch(err){
-            expect(err).toBeInstanceOf(NotFoundError).toBeTruthy();
+            expect(err instanceof BadRequestError).toBeTruthy();
         }
  });
 
@@ -204,7 +205,7 @@ describe("update a job" , function(){
             await Job.update(testJobIds[0], {});
             fail();
         } catch(err){
-            expect(err).toBeInstanceOf(BadRequestError).toBeTruthy();
+            expect(err instanceof BadRequestError).toBeTruthy();
         }
     });
 });
@@ -224,7 +225,7 @@ describe("delete a job" , function(){
             await Job.delete(0);
             fail();
         } catch(err){
-            expect(err).toBeInstanceOf(NotFoundError).toBeTruthy();
+            expect(err instanceof NotFoundError).toBeTruthy();
         }
     });
 });

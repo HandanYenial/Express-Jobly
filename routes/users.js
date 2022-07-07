@@ -6,7 +6,7 @@ const jsonschema = require("jsonschema");
 
 const express = require("express");
 const { ensureLoggedIn } = require("../middleware/auth");
-const {ensureAdmin } = require("../middleware/admin");
+const {ensureAdmin } = require("../middleware/auth");
 const { ensureCorrectUserOrAdmin } = require("../middleware/ensureCorrectUserOrAdmin");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");

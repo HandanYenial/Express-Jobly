@@ -59,12 +59,12 @@ describe("create", function () {
 /************************************** findAll */
 
 describe("findAll", function () {
-  test("works: all", async function () {
+  test("works: all" , async function () {
     let companies = await Company.findAll();
     expect(companies).toEqual([
       {
         handle: "c1",
-        name: "C1",
+        name: "Client1",
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
@@ -106,11 +106,11 @@ describe("findAll", function () {
   });
 
   test("works: by max employees", async function(){
-    let companies = await Company.findAll({ maxEmployees :2});
+    let companies = await Company.findAll({ maxEmployees :5});
     expect(companies).toEqual([
       {
         handle : "c1",
-        name : "C1",
+        name : "Client1",
         description : "Desc1",
         numEmployees : 1,
         logoUrl : "http://c1.img",

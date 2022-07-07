@@ -17,25 +17,16 @@ const { sqlForPartialUPdate } = require("../helpers/sql"); //import the function
 
 class Job{
     //create a job with the given title, salary, equity, and company_handle
-    static async create({id, title, salary, equity, company_handle}){
-        const dublicateCheck = await db.query( //check if the job already exists
-            `SELECT id 
-             FROM jobs
-             WHERE id =$1`,
-          [id]);
-    if(dublicateCheck.rows[0]){ //if the job already exists, throw an error
-        throw new BadRequestError(`Job with id ${id} already exists`); //throw an error
-    }
-    
+    static async create(data){
         const result = await db.query( //create the job
             `INSERT INTO jobs ( title, salary, equity, company_handle)
-             VALUES($1, $2, $3, $4, $5)
+             VALUES($1, $2, $3, $4)
              RETURNING id,title,salary,equity,company_handle`,
              [
-              title,
-              salary,
-              equity,
-              company_handle,
+              data.title,
+              data.salary,
+              data.equity,
+              data.company_handle,
             ],
     );
     const job = result.rows[0]; //get the job that was just created
@@ -50,7 +41,7 @@ class Job{
                             jobs.salary,
                             jobs.equity,
                             jobs.company_handle AS "companyHandle",
-                            company.name AS "companyName",
+                            company.name AS "companyName"
                      FROM jobs
                      LEFT JOIN companies AS company ON company.handle = jobs.company_handle`;
         let whereExpressions = [];
