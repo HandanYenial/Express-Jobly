@@ -96,7 +96,7 @@ describe("Get all jobs" , function(){
                 salary: "100000",
                 equity: "0.1",
                 company_handle: "test"
-            }
+            },
             {
                 id: "2",
                 title: "Frontend Developer",
