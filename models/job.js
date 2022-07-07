@@ -122,7 +122,7 @@ class Job{
         return job;
     }
 
-    //Updating the job: ID should never change. 
+    //Updating a job should never change the ID of a job, nor the company associated with a job.
     //Title, salary, equity should be updatable.
     //Returns {id, title, salary, equity, company_handle} ===> this is the new job
 
