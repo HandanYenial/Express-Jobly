@@ -130,4 +130,19 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 });
 
 
+// Add a route at POST /users/:username/jobs/:id that allows that user to apply for a job (or an admin to do it for them).
+//That route should return JSON like:
+//{ applied : jobId}
+
+router.post("/:username/jobs/:id" , ensureCorrectUserOrAdmin, async function(req,res,next){
+  try{
+    const jobId = +req.params.id;
+    await User.applyToJob(req.params.username, jobId);
+    return res.json({ applied: jobId });
+  } catch(err){
+    return next(err);
+  }
+});
+
+
 module.exports = router;
