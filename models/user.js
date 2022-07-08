@@ -179,13 +179,13 @@ class User {
    * or a serious security risks are opened.
    */
 
-  static async update(username, data) {
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+  static async update(username, data) { //data is an object
+    if (data.password) { //if password is in data, hash it
+      data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR); //hash the password
     }
 
     const { setCols, values } = sqlForPartialUpdate(
-        data,
+        data, ///setCols is a string, values is an array
         {
           firstName: "first_name",
           lastName: "last_name",

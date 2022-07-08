@@ -1,4 +1,8 @@
-"use strict";
+"use strict"; 
+//Why Strict Mode? Strict mode makes it easier to write "secure" JavaScript. Strict mode changes previously accepted 
+//"bad syntax" into real errors. As an example, in normal JavaScript, mistyping a variable name creates a new global variable.
+//W3Schools
+
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
@@ -15,9 +19,10 @@ class Company {
    *
    * Throws BadRequestError if company already in database.
    * */
+  //company table : {handle, name, description, num_employees, logo_url}
 
-  static async create({ handle, name, description, numEmployees, logoUrl }) {
-    const duplicateCheck = await db.query( 
+  static async create({ handle, name, description, numEmployees, logoUrl }) { //
+    const duplicateCheck = await db.query( //check if company already exists
           `SELECT handle
            FROM companies
            WHERE handle = $1`,
@@ -26,7 +31,7 @@ class Company {
     if (duplicateCheck.rows[0])// if company already exists
       throw new BadRequestError(`Duplicate company: ${handle}`); // throw error
 
-    const result = await db.query(
+    const result = await db.query( 
           `INSERT INTO companies
            (handle, name, description, num_employees, logo_url)
            VALUES ($1, $2, $3, $4, $5)
@@ -80,7 +85,7 @@ class Company {
                   logo_url AS "logoUrl"
             FROM companies`;
     
-    let whereExpressions =[];
+    let whereExpressions =[]; 
     let queryValues =[];
     // we can pass in a search filter object with the following keys:
     const { minEmployees, maxEmployees, name } = searchFilters; 
@@ -121,8 +126,8 @@ class Company {
    * Throws NotFoundError if not found.
    **/
 
-  static async get(handle) {
-    const companyRes = await db.query(
+  static async get(handle) { //get company by handle
+    const companyRes = await db.query( 
           `SELECT handle,
                   name,
                   description,
@@ -130,7 +135,8 @@ class Company {
                   logo_url AS "logoUrl"
            FROM companies
            WHERE handle = $1`,
-        [handle]);
+        [handle]
+      );
 
     const company = companyRes.rows[0];
 
@@ -152,7 +158,7 @@ class Company {
    */
 
   static async update(handle, data) {
-    const { setCols, values } = sqlForPartialUpdate(
+    const { setCols, values } = sqlForPartialUpdate(  ////????????????????
         data,
         {
           numEmployees: "num_employees",

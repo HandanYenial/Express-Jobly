@@ -15,9 +15,10 @@ const { sqlForPartialUPdate } = require("../helpers/sql"); //import the function
 // it will join with companies table on handle. (companies table (handle,name , ....))
 //  );
 
+
 class Job{
     //create a job with the given title, salary, equity, and company_handle
-    static async create(data){
+    static async create(data){ 
         const result = await db.query( //create the job
             `INSERT INTO jobs ( title, salary, equity, company_handle)
              VALUES($1, $2, $3, $4)
@@ -33,6 +34,21 @@ class Job{
 
     return job; //return the job
     }
+
+    //static async create(id,{title,salary,equity,company_handle}){
+    //    const result = await db.query( //create the job
+    //        `INSERT INTO jobs ( title, salary, equity, company_handle)
+    //         VALUES($1, $2, $3, $4)
+    //         RETURNING id,title,salary,equity,company_handle`,
+    //         [
+    //          title,
+    //          salary,
+    //          equity,
+    //          company_handle,
+    //        ],
+    //    );
+    //    const job = result.rows[0]; //get the job that was just created
+    //    return job; //return the job
 
     //get all jobs
     static async findAll( { minSalary, hasEquity, title} = {}){
@@ -50,18 +66,18 @@ class Job{
     // For each possible search term, add to whereExpressions and
     // queryValues so we can generate the right SQL
 
-    if (minSalary !== undefined){
-        queryValues.push(minSalary);
-        whereExpressions.push(`salary >= $${queryValues.length}`);
+    if (minSalary !== undefined){ //if minSalary is defined
+        queryValues.push(minSalary); //add the minSalary to the queryValues
+        whereExpressions.push(`salary >= $${queryValues.length}`); //add the minSalary to the whereExpressions
     }
 
-    if (hasEquity === true){
-        whereExpressions.push(`equity > 0`);
+    if (hasEquity === true){ //if hasEquity is true
+        whereExpressions.push(`equity > 0`); //add the hasEquity to the whereExpressions
     }
 
-    if (title !== undefined){
-        queryValues.push(`%${title}%`);
-        whereExpressions.push(`title ILIKE $${queryValues.length}`);
+    if (title !== undefined){ //if title is defined
+        queryValues.push(`%${title}%`); //add the title to the queryValues
+        whereExpressions.push(`title ILIKE $${queryValues.length}`); //add the title to the whereExpressions
     }
 
     if (whereExpressions.length > 0){
@@ -77,7 +93,7 @@ class Job{
 
     //get a job by id
 
-    static async get(id){
+    static async get(id){ //get the job with the given id
         const result = await db.query(
             `SELECT id,
                     title,
@@ -97,7 +113,7 @@ class Job{
         //company_handle VARCHAR(25) NOT NULL
         //REFERENCES companies ON DELETE CASCADE
 
-        const companiesResult = await db.query(
+        const companiesResult = await db.query( //get the company with the given handle
             `SELECT handle,
                     name,
                     description,
@@ -107,7 +123,7 @@ class Job{
               WHERE handle = $1`,
               [job.companyHandle]
         );
-        delete job.companyHandle;
+        delete job.companyHandle; //delete the companyHandle from the job
         job.company = companiesResult.rows[0];
 
         return job;
