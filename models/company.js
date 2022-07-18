@@ -77,6 +77,7 @@ class Company {
 //Validate that the request does not contain inappropriate other filtering fields in the route. 
 
   static async findAll(searchFilters ={}){ //searchFilters is a query string
+    // eg: searchFilters = {name: "apple", minEmployees: 100, maxEmployees: 1000}
     let query = 
           `SELECT handle,
                   name,
@@ -85,7 +86,7 @@ class Company {
                   logo_url AS "logoUrl"
             FROM companies`;
     
-    let whereExpressions =[]; 
+    let whereExpressions =[]; //WHERE name ="apple"
     let queryValues =[];
     // we can pass in a search filter object with the following keys:
     const { minEmployees, maxEmployees, name } = searchFilters; 
@@ -95,25 +96,26 @@ class Company {
     }
 
     if(minEmployees !== undefined){ //if minEmployees is defined
-      queryValues.push(minEmployees); //push minEmployees to queryValues
-      whereExpressions.push(`num_employees >= $${queryValues.length}`); //the length of the queryValues array= meanning the number of                                                                   //employees
+      //queryValues.push(minEmployees); //push minEmployees to queryValues
+      whereExpressions.push(`num_employees >= ${minEmployees}`); //the length of the queryValues array= meanning the number of                                                                   //employees
     }
 
     if(maxEmployees !== undefined){
       queryValues.push(maxEmployees);
-      whereExpressions.push(`num_employees <+ $${queryValues.length}`);
+      whereExpressions.push(`num_employees <= ${maxEmployees}`);
     }
 
     if(name){
       queryValues.push(`%${name}%`);
-      whereExpressions.push(`name ILIKE $${queryValues.length}`);
+      whereExpressions.push(`name ILIKE ${name}`);
     }
 
     if(whereExpressions.length > 0){
       query += ` WHERE ${whereExpressions.join(" AND ")}`;
     }
 
-    query += "ORDER BY name";
+    query += " ORDER BY name";
+    console.log(query)
     const companiesRes = await db.query(query, queryValues);
     return companiesRes.rows;
     }
@@ -158,7 +160,7 @@ class Company {
    */
 
   static async update(handle, data) {
-    const { setCols, values } = sqlForPartialUpdate(  ////????????????????
+    const { setCols, values } = sqlForPartialUpdate( 
         data,
         {
           numEmployees: "num_employees",
@@ -174,7 +176,10 @@ class Company {
                                 description, 
                                 num_employees AS "numEmployees", 
                                 logo_url AS "logoUrl"`;
+                                console.log("Update Query", querySql)
+                                console.log("Values", [...values, handle])
     const result = await db.query(querySql, [...values, handle]);
+    //const mathStudents = await db.query("SELECT * FROM students WHERE subject = $1", ["math"]); // SELECT * FROM students WHERE subject = 'math';
     const company = result.rows[0];
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);

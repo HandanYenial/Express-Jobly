@@ -68,7 +68,7 @@ class Job{
 
     if (minSalary !== undefined){ //if minSalary is defined
         queryValues.push(minSalary); //add the minSalary to the queryValues
-        whereExpressions.push(`salary >= $${queryValues.length}`); //add the minSalary to the whereExpressions
+        whereExpressions.push(`salary >= ${queryValues.length}`); //add the minSalary to the whereExpressions
     }
 
     if (hasEquity === true){ //if hasEquity is true
@@ -85,7 +85,7 @@ class Job{
     }
 
 // Finalize query and return results
-    query += "ORDER BY title";
+   // query += "ORDER BY title"; // gives us the jobs in alphabetical order(gives 500 error)
     const jobRes = await db.query(query,queryValues);
     return jobRes.rows;
     

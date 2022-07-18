@@ -98,7 +98,7 @@ router.get("/:handle", async function (req, res, next) {
  //ensurelogged in is for all logged in users, if we want it to be for only admin we need to add ensureAdmin
 // ensureAdmin is a middleware exported from auth.js
 
-router.patch("/:handle", ensureAdmin, async function (req, res, next) {
+router.patch("/:handle", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, companyUpdateSchema);
     if (!validator.valid) {
